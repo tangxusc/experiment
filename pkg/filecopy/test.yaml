@@ -1,0 +1,49 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: foo
+spec:
+  params:
+    - name: pathToDockerFile
+      type: string
+      description: The path to the dockerfile to build
+      default: /workspace/workspace/Dockerfile
+  resources:
+    inputs:
+    - name: workspace
+      type: git
+    outputs:
+    - name: buildImage
+      type: image
+  steps:
+    - name: build-sources
+      image: fedora
+      command: 
+      - /bin/bash
+      args: ['-c', 'echo hello world']
+  workspaces:
+    - name: test
+      description: test
+      mountPath: /test
+---
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: echo-hello-world-run
+spec:
+  taskRef:
+    name: echo-hello-world
+  workspaces:
+    - name: test
+      emptyDirs: {}
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: foo-run
+spec:
+  pipelineRef:
+    name: foo
+  workspaces:
+    - name: test
+      

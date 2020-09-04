@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test
+  namespace: test
+data:
+  a1.txt: test
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test
+  namespace: test
+  labels:
+    app: test
+spec:
+
+  containers:
+    - name: test
+      image: ubuntu:latest
+      command:
+        - "cp"
+      args:
+        - "/test/a1.txt"
+        - "/target/"
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - mountPath: /test
+          name: test
+        - mountPath: /target
+          name: target
+  restartPolicy: Always
+  volumes:
+    - name: test
+      configMap:
+        name: test
+    - name: target
+      hostPath:
+        path: /abcd/

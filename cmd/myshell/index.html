@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<body>
+<button type="button" onclick="conn()">连接</button>
+<button type="button" onclick="disconn()">断开</button>
+<button type="button" onclick="quit()">quit</button>
+
+<div id="content">
+
+</div>
+
+<script type="text/javascript">
+    var ws
+
+    function conn() {
+        ws = new WebSocket("ws://localhost:9999/ws");
+
+        ws.onopen = function () {
+            document.getElementById('content').innerHTML = "connection success";
+        };
+
+        ws.onmessage = function (evt) {
+            var received_msg = evt.data;
+            document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + "<br/>" + received_msg;
+        };
+
+        ws.onclose = function () {
+            // 关闭 websocket
+            alert("连接已关闭...");
+        };
+
+    }
+
+    function disconn() {
+        ws.close()
+    }
+</script>
+</body>
+</html>
