@@ -18,6 +18,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.7.1
+	github.com/vibrantbyte/go-antpath v1.1.1
 	github.com/webview/webview v0.0.0-20200724072439-e0c01595b361
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
 	golang.org/x/sys v0.0.0-20200831180312-196b9ba8737a // indirect
