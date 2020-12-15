@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduler
+  namespace: test
+  labels:
+    app: scheduler
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: scheduler
+      labels:
+        app: scheduler
+    spec:
+      containers:
+        - name: scheduler
+          image: registry.aliyuncs.com/google_containers/kube-scheduler:v1.18.4
+          imagePullPolicy: IfNotPresent
+          command:
+            - kube-scheduler
+            - --kubeconfig=/pki/config/admin.config
+            - --authentication-kubeconfig=/pki/config/admin.config
+            - --authorization-kubeconfig=/pki/config/admin.config
+            - --leader-elect=true
+            - --requestheader-client-ca-file=/pki/ca/ca.pem
+          volumeMounts:
+            - mountPath: /pki/ca
+              name: ca-pki
+              readOnly: true
+            - mountPath: /pki/etcd
+              name: etcd-pki
+              readOnly: true
+            - mountPath: /pki/server
+              name: k8s-server
+              readOnly: true
+            - mountPath: /pki/client
+              name: k8s-client
+              readOnly: true
+            - mountPath: /pki/config
+              name: config
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: ca-pki
+          secret:
+            secretName: ca-pki
+        - name: etcd-pki
+          secret:
+            secretName: etcd-pki
+        - name: k8s-server
+          secret:
+            secretName: k8s-server
+        - name: k8s-client
+          secret:
+            secretName: k8s-client
+        - name: config
+          secret:
+            secretName: config
+  selector:
+    matchLabels:
+      app: scheduler

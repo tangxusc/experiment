@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apiserver
+  namespace: test
+  labels:
+    app: apiserver
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: apiserver
+      labels:
+        app: apiserver
+    spec:
+      containers:
+        - name: apiserver
+          image: registry.aliyuncs.com/google_containers/kube-apiserver:v1.18.4
+          imagePullPolicy: IfNotPresent
+          command:
+            - kube-apiserver
+            - --allow-privileged=true
+            - --authorization-mode=Node,RBAC
+            - --client-ca-file=/pki/ca/ca.pem
+            - --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,TaintNodesByCondition,Priority,DefaultTolerationSeconds,DefaultStorageClass,StorageObjectInUseProtection,PersistentVolumeClaimResize,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,RuntimeClass,ResourceQuota
+            - --etcd-cafile=/pki/ca/ca.pem
+            - --etcd-certfile=/pki/etcd/etcd.pem
+            - --etcd-keyfile=/pki/etcd/etcd-key.pem
+            - --etcd-servers=http://etcd:2379
+            - --insecure-port=0
+            - --kubelet-client-certificate=/pki/client/kubernetes-node.pem
+            - --kubelet-client-key=/pki/client/kubernetes-node-key.pem
+            - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+            - --secure-port=6443
+            - --service-cluster-ip-range=10.96.0.0/12
+            - --tls-cert-file=/pki/server/kubernetes-server.pem
+            - --tls-private-key-file=/pki/server/kubernetes-server-key.pem
+          env:
+            - name: ETCD_ADDRESS
+              value: 'etcd'
+          ports:
+            - containerPort: 6443
+              name: https-6443
+          volumeMounts:
+            - mountPath: /pki/ca
+              name: ca-pki
+              readOnly: true
+            - mountPath: /pki/etcd
+              name: etcd-pki
+              readOnly: true
+            - mountPath: /pki/server
+              name: k8s-server
+              readOnly: true
+            - mountPath: /pki/client
+              name: k8s-client
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: ca-pki
+          secret:
+            secretName: ca-pki
+        - name: etcd-pki
+          secret:
+            secretName: etcd-pki
+        - name: k8s-server
+          secret:
+            secretName: k8s-server
+        - name: k8s-client
+          secret:
+            secretName: k8s-client
+  selector:
+    matchLabels:
+      app: apiserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apiserver
+  namespace: test
+spec:
+  selector:
+    app: apiserver
+  ports:
+    - port: 6443
+      name: https-6443
+  type: NodePort

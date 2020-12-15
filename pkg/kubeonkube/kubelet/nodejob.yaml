@@ -1,0 +1,68 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: node-install-job
+  namespace: test
+  labels:
+    app: node-install-job
+spec:
+  template:
+    metadata:
+      name: node-install-job
+      labels:
+        app: node-install-job
+    spec:
+      serviceAccountName: admin
+      containers:
+        - name: node-install-job
+          image: ccr.ccs.tencentyun.com/k8s-test/test:init-v1
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - node-install.sh
+          env:
+            - name: NODE_ADDRESS
+              value: ''
+            - name: NODE_USERNAME
+              value: ''
+            - name: NODE_PASSWORD
+              value: ''
+          volumeMounts:
+            - mountPath: /pki/ca
+              name: ca-pki
+              readOnly: true
+            - mountPath: /pki/etcd
+              name: etcd-pki
+              readOnly: true
+            - mountPath: /pki/server
+              name: k8s-server
+              readOnly: true
+            - mountPath: /pki/client
+              name: k8s-client
+              readOnly: true
+            - mountPath: /home/node/
+              name: nodeconfig
+              readOnly: true
+            - mountPath: /home/admin
+              name: adminconfig
+              readOnly: true
+      volumes:
+        - name: ca-pki
+          secret:
+            secretName: ca-pki
+        - name: etcd-pki
+          secret:
+            secretName: etcd-pki
+        - name: k8s-server
+          secret:
+            secretName: k8s-server
+        - name: k8s-client
+          secret:
+            secretName: k8s-client
+        - name: nodeconfig
+          secret:
+            secretName: nodeconfig
+        - name: adminconfig
+          secret:
+            secretName: config
+      restartPolicy: Never

@@ -1,0 +1,17 @@
+# kubectl run tomcat --image tomcat --port 8080
+# kubectl expose pod tomcat --port=8080 --name=tomcat
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: tomcat
+spec:
+  entryPoints:
+    - web
+    - websecure
+    - traefik
+  routes:
+    - match: PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: tomcat
+          kind: service

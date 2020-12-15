@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-manager
+  namespace: test
+  labels:
+    app: controller-manager
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: controller-manager
+      labels:
+        app: controller-manager
+    spec:
+      containers:
+        - name: controller-manager
+          image: registry.aliyuncs.com/google_containers/kube-controller-manager:v1.18.4
+          imagePullPolicy: IfNotPresent
+          command:
+            - kube-controller-manager
+            - --allocate-node-cidrs=true
+            - --authentication-kubeconfig=/pki/config/admin.config
+            - --authorization-kubeconfig=/pki/config/admin.config
+            - --bind-address=127.0.0.1
+            - --client-ca-file=/pki/ca/ca.pem
+            - --cluster-cidr=192.168.0.0/16
+            - --cluster-signing-cert-file=/pki/ca/ca.pem
+            - --cluster-signing-key-file=/pki/ca/ca-key.pem
+            - --controllers=*,bootstrapsigner,tokencleaner
+            - --kubeconfig=/pki/config/admin.config
+            - --leader-elect=true
+            - --node-cidr-mask-size=24
+            - --requestheader-client-ca-file=/pki/ca/ca.pem
+            - --root-ca-file=/pki/ca/ca.pem
+            - --service-account-private-key-file=/pki/server/kubernetes-server-key.pem
+            - --service-cluster-ip-range=192.168.192.0/18
+            - --use-service-account-credentials=true
+          volumeMounts:
+            - mountPath: /pki/ca
+              name: ca-pki
+              readOnly: true
+            - mountPath: /pki/etcd
+              name: etcd-pki
+              readOnly: true
+            - mountPath: /pki/server
+              name: k8s-server
+              readOnly: true
+            - mountPath: /pki/client
+              name: k8s-client
+              readOnly: true
+            - mountPath: /pki/config
+              name: config
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: ca-pki
+          secret:
+            secretName: ca-pki
+        - name: etcd-pki
+          secret:
+            secretName: etcd-pki
+        - name: k8s-server
+          secret:
+            secretName: k8s-server
+        - name: k8s-client
+          secret:
+            secretName: k8s-client
+        - name: config
+          secret:
+            secretName: config
+  selector:
+    matchLabels:
+      app: controller-manager

@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etcd
+  namespace: test
+  labels:
+    app: etcd
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: etcd
+      labels:
+        app: etcd
+    spec:
+      containers:
+        - name: etcd
+          image: registry.aliyuncs.com/google_containers/etcd:3.3.10
+          imagePullPolicy: IfNotPresent
+          command:
+            - etcd
+            - --name
+            - etcd1
+            - --cert-file
+            - /pki/etcd/etcd.pem
+            - --key-file
+            - /pki/etcd/etcd-key.pem
+            - --peer-cert-file
+            - /pki/etcd/etcd.pem
+            - --peer-key-file
+            - /pki/etcd/etcd-key.pem
+            - --trusted-ca-file
+            - /pki/ca/ca.pem
+            - --peer-trusted-ca-file
+            - /pki/ca/ca.pem
+#            - --initial-advertise-peer-urls
+#            - http://${LOCALIP}:2380
+#            - --listen-peer-urls
+#            - http://${LOCALIP}:2380
+            - --listen-client-urls
+            - http://0.0.0.0:2379
+            - --advertise-client-urls
+            - http://0.0.0.0:2379
+            - --initial-cluster-token
+            - etcd-cluster-token
+#            - --initial-cluster etcd1
+#            - http://${LOCALIP}:2380
+            - --initial-cluster-state
+            - new
+            - --data-dir
+            - ./etcd-dat
+          ports:
+            - containerPort: 2379
+              name: grpc-2379
+            - containerPort: 2380
+              name: grpc-2380
+          env:
+            - name: "LOCALIP"
+              value: "1.1.1.1"
+          volumeMounts:
+            - mountPath: /pki/ca
+              name: ca-pki
+              readOnly: true
+            - mountPath: /pki/etcd
+              name: etcd-pki
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: ca-pki
+          secret:
+            secretName: ca-pki
+        - name: etcd-pki
+          secret:
+            secretName: etcd-pki
+        - name: k8s-server
+          secret:
+            secretName: k8s-server
+        - name: k8s-client
+          secret:
+            secretName: k8s-client
+  selector:
+    matchLabels:
+      app: etcd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: etcd
+  namespace: test
+spec:
+  selector:
+    app: etcd
+  ports:
+    - port: 2379
+      name: grpc-2379
+    - port: 2380
+      name: grpc-2380
+  type: ClusterIP

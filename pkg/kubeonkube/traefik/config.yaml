@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik
+  namespace: traefik
+data:
+  traefik.toml: |
+    [entryPoints]
+      [entryPoints.web]
+        address = ":80"
+
+      [entryPoints.websecure]
+        address = ":443"
+
+    [log]
+      level = "DEBUG"
+      format = "json"
+
+    [accessLog]
+      format = "json"
+    [api]
+
+    [ping]
+
+    [providers.kubernetesCRD]

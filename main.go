@@ -1,5 +1,7 @@
 package main
 
+import fmt "fmt"
+
 //func main() {
 //	//i := make([]int, 10, 100)
 //	//fmt.Println(i[9])
