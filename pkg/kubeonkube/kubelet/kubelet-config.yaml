@@ -6,14 +6,14 @@ authentication:
     cacheTTL: 0s
     enabled: true
   x509:
-    clientCAFile: /etc/kubernetes/pki/ca.crt
+    clientCAFile: /etc/kubernetes/ca.pem
 authorization:
   mode: Webhook
   webhook:
     cacheAuthorizedTTL: 0s
     cacheUnauthorizedTTL: 0s
 clusterDNS:
-- 10.96.0.10
+  - 10.96.0.10
 clusterDomain: cluster.local
 cpuManagerReconcilePeriod: 0s
 evictionPressureTransitionPeriod: 0s
@@ -27,7 +27,7 @@ nodeStatusReportFrequency: 0s
 nodeStatusUpdateFrequency: 0s
 rotateCertificates: true
 runtimeRequestTimeout: 0s
-staticPodPath: /etc/kubernetes/manifests
+#staticPodPath: /etc/kubernetes/manifests
 streamingConnectionIdleTimeout: 0s
 syncFrequency: 0s
 volumeStatsAggPeriod: 0s

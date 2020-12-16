@@ -23,7 +23,7 @@ spec:
             - create
             - clusterrolebinding
             - cluster-node
-            - --clusterrole=system:node
+            - --clusterrole=cluster-admin
             - --user=kubernetes-node
             - --group=system:node
           volumeMounts:

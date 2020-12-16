@@ -8,8 +8,6 @@ ADD cfssl-certinfo_linux-amd64 /usr/bin/cfssl-certinfo
 ADD cfssljson_linux-amd64 /usr/bin/cfssljson
 ADD cfssl_linux-amd64 /usr/bin/cfssl
 ADD kubernetes/server/bin/kubectl /usr/bin/kubectl
-ADD kubernetes/server/bin/kubelet /usr/bin/kubelet
-ADD kubernetes/server/bin/kube-proxy /usr/bin/kube-proxy
 ADD init.sh /home/init.sh
 RUN chmod a+x /home/init.sh
 WORKDIR /home

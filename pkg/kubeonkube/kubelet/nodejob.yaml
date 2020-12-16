@@ -19,13 +19,13 @@ spec:
           imagePullPolicy: IfNotPresent
           command:
             - sh
-            - node-install.sh
+            - /home/install.sh
           env:
             - name: NODE_ADDRESS
               value: ''
             - name: NODE_USERNAME
               value: ''
-            - name: NODE_PASSWORD
+            - name: SSHPASS
               value: ''
           volumeMounts:
             - mountPath: /pki/ca

@@ -4,7 +4,7 @@ curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
 mkdir -p /etc/docker/
 cat >> /etc/docker/daemon.json <<EOF
 {
-  "registry-mirrors": ["https://7bezldxe.mirror.aliyuncs.com", "https://kw88y6eh.mirror.aliyuncs.com"]
+  "registry-mirrors": ["https://registry.docker-cn.com"]
 }
 EOF
 systemctl restart docker

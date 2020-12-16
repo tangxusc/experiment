@@ -3,13 +3,13 @@
 echo '==================init variable==================='
 echo $APISERVER_ADDRESS
 echo $FRONT_APISERVER_ADDRESS
-NAMESPACE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace);
+NAMESPACE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 echo $NAMESPACE
 
 echo '==================generator ssl==================='
 
-mkdir -p /home/test&&cd /home/test
-cat <<EOF>ca-config.json
+mkdir -p /home/test && cd /home/test
+cat <<EOF >ca-config.json
 {
     "signing":{
         "default":{
@@ -39,7 +39,7 @@ cat <<EOF>ca-config.json
 }
 EOF
 
-cat <<EOF>ca-csr.json
+cat <<EOF >ca-csr.json
 {
   "CN": "CA",
   "key": {
@@ -62,7 +62,7 @@ cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 
 ls -la
 
-cat <<EOF>etcd-csr.json
+cat <<EOF >etcd-csr.json
 {
   "CN": "etcd",
   "key": {
@@ -87,7 +87,7 @@ EOF
 
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=etcd etcd-csr.json | cfssljson -bare etcd
 
-cat <<EOF>k8s-client-csr.json
+cat <<EOF >k8s-client-csr.json
 {
     "CN": "kubernetes-node",
     "hosts": [
@@ -109,9 +109,9 @@ cat <<EOF>k8s-client-csr.json
 }
 EOF
 
-cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes k8s-client-csr.json |cfssljson -bare kubernetes-node
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes k8s-client-csr.json | cfssljson -bare kubernetes-node
 
-cat <<EOF>k8s-server-csr.json
+cat <<EOF >k8s-server-csr.json
 {
     "CN": "kubernetes-admin",
     "hosts": [
@@ -147,7 +147,7 @@ cat <<EOF>k8s-server-csr.json
 }
 EOF
 
-cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes k8s-server-csr.json |cfssljson -bare kubernetes-server
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes k8s-server-csr.json | cfssljson -bare kubernetes-server
 
 kubectl config --kubeconfig=admin.config set-cluster kubernetes --certificate-authority=/home/test/ca.pem --embed-certs=true --server=https://${APISERVER_ADDRESS}:6443
 kubectl config --kubeconfig=admin.config set-credentials kubernetes-admin --embed-certs=true --client-certificate=/home/test/kubernetes-server.pem --client-key=/home/test/kubernetes-server-key.pem
