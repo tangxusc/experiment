@@ -17,6 +17,7 @@ sshpass -e scp -P 22 /home/daemon.json ${NODE_USERNAME}@${NODE_ADDRESS}:/etc/doc
 
 #2.安装docker
 sshpass -e ssh ${NODE_USERNAME}@${NODE_ADDRESS} 'curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun'
+sshpass -e ssh ${NODE_USERNAME}@${NODE_ADDRESS} 'systemctl restart docker'
 
 #3.启动kubelet
 sshpass -e ssh ${NODE_USERNAME}@${NODE_ADDRESS} 'systemctl daemon-reload&&systemctl start kubelet&&systemctl enable kubelet'
