@@ -20,15 +20,17 @@ spec:
       serviceAccountName: admin
       containers:
         - name: init
-          image: ccr.ccs.tencentyun.com/k8s-test/test:init-v1
+          image: ccr.ccs.tencentyun.com/k8s-test/init:v1
           command:
-            - sh 
+            - sh
             - /home/init.sh
           env:
             - name: APISERVER_ADDRESS
               value: 'apiserver'
             - name: FRONT_APISERVER_ADDRESS
-              value: '42.193.139.71'
+              value: '42.193.137.190'
+            - name: FRONT_APISERVER_PORT
+              value: '30258'
           imagePullPolicy: IfNotPresent
       restartPolicy: Never
 ---

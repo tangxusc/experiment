@@ -1,51 +1,41 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: node-install-job
-  namespace: test
+  name: fileserver
   labels:
-    app: node-install-job
+    app: fileserver
 spec:
+  replicas: 1
   template:
     metadata:
-      name: node-install-job
+      name: fileserver
       labels:
-        app: node-install-job
+        app: fileserver
     spec:
-      serviceAccountName: admin
       containers:
-        - name: node-install-job
-          image: ccr.ccs.tencentyun.com/k8s-test/test:init-v1
+        - name: fileserver
+          image: ccr.ccs.tencentyun.com/k8s-test/node:v1
           imagePullPolicy: IfNotPresent
-          command:
-            - sh
-            - /home/install.sh
-          env:
-            - name: NODE_ADDRESS
-              value: ''
-            - name: NODE_USERNAME
-              value: ''
-            - name: SSHPASS
-              value: ''
           volumeMounts:
-            - mountPath: /pki/ca
+            - mountPath: /home/ca
               name: ca-pki
               readOnly: true
-            - mountPath: /pki/etcd
+            - mountPath: /home/etcd
               name: etcd-pki
               readOnly: true
-            - mountPath: /pki/server
+            - mountPath: /home/server
               name: k8s-server
               readOnly: true
-            - mountPath: /pki/client
+            - mountPath: /home/client
               name: k8s-client
               readOnly: true
-            - mountPath: /home/node/
+            - mountPath: /home/node
               name: nodeconfig
               readOnly: true
             - mountPath: /home/admin
               name: adminconfig
               readOnly: true
+      restartPolicy: Always
       volumes:
         - name: ca-pki
           secret:
@@ -65,4 +55,6 @@ spec:
         - name: adminconfig
           secret:
             secretName: config
-      restartPolicy: Never
+  selector:
+    matchLabels:
+      app: fileserver

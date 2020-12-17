@@ -165,7 +165,7 @@ kubectl create secret generic k8s-server --from-file=k8s-server-csr.json --from-
 kubectl create secret generic k8s-client --from-file=k8s-client-csr.json --from-file=kubernetes-node-key.pem --from-file=kubernetes-node.csr --from-file=kubernetes-node.pem
 kubectl create secret generic config --from-file=admin.config
 
-kubectl config --kubeconfig=node.config set-cluster kubernetes --certificate-authority=/home/test/ca.pem --embed-certs=true --server=https://${FRONT_APISERVER_ADDRESS}:6443
+kubectl config --kubeconfig=node.config set-cluster kubernetes --certificate-authority=/home/test/ca.pem --embed-certs=true --server=https://${FRONT_APISERVER_ADDRESS}:${FRONT_APISERVER_PORT}
 kubectl config --kubeconfig=node.config set-credentials kubernetes-node --embed-certs=true --client-certificate=/home/test/kubernetes-node.pem --client-key=/home/test/kubernetes-node-key.pem
 kubectl config --kubeconfig=node.config set-context kubernetes --cluster=kubernetes --namespace=default --user=kubernetes-node
 kubectl config --kubeconfig=node.config set current-context kubernetes

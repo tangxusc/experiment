@@ -82,5 +82,6 @@ spec:
     app: apiserver
   ports:
     - port: 6443
+      nodePort: 30258
       name: https-6443
   type: NodePort

@@ -2,7 +2,7 @@
 Description=Kubernetes kubeproxy
 After=docker.service
 [Service]
-ExecStart=/usr/bin/kubeproxy --config=/etc/kubernetes/kubeproxy-config.yaml
+ExecStart=/usr/bin/kube-proxy --config=/etc/kubernetes/kubeproxy-config.yaml
 Restart=on-failure
 LimitNOFILE=65536
 [Install]

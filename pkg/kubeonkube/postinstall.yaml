@@ -15,7 +15,7 @@ spec:
       serviceAccountName: admin
       containers:
         - name: postinstall
-          image: ccr.ccs.tencentyun.com/k8s-test/test:init-v1
+          image: ccr.ccs.tencentyun.com/k8s-test/init:v1
           imagePullPolicy: IfNotPresent
           command:
             - kubectl
