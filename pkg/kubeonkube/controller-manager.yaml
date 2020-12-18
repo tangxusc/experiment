@@ -24,7 +24,7 @@ spec:
             - --authorization-kubeconfig=/pki/config/admin.config
             - --bind-address=127.0.0.1
             - --client-ca-file=/pki/ca/ca.pem
-            - --cluster-cidr=192.168.0.0/16
+            - --cluster-cidr=10.0.0.0/8
             - --cluster-signing-cert-file=/pki/ca/ca.pem
             - --cluster-signing-key-file=/pki/ca/ca-key.pem
             - --controllers=*,bootstrapsigner,tokencleaner
@@ -34,7 +34,7 @@ spec:
             - --requestheader-client-ca-file=/pki/ca/ca.pem
             - --root-ca-file=/pki/ca/ca.pem
             - --service-account-private-key-file=/pki/server/kubernetes-server-key.pem
-            - --service-cluster-ip-range=192.168.192.0/18
+            - --service-cluster-ip-range=10.96.0.0/12
             - --use-service-account-credentials=true
           volumeMounts:
             - mountPath: /pki/ca
