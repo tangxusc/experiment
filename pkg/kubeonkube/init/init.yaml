@@ -28,7 +28,7 @@ spec:
             - name: APISERVER_ADDRESS
               value: 'apiserver'
             - name: FRONT_APISERVER_ADDRESS
-              value: '42.193.137.190'
+              value: '81.71.129.221'
             - name: FRONT_APISERVER_PORT
               value: '30258'
           imagePullPolicy: IfNotPresent

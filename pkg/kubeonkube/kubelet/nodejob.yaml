@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fileserver
+  namespace: test
   labels:
     app: fileserver
 spec:
@@ -14,8 +15,10 @@ spec:
     spec:
       containers:
         - name: fileserver
-          image: ccr.ccs.tencentyun.com/k8s-test/node:v1
+          image: ccr.ccs.tencentyun.com/k8s-test/node:v2
           imagePullPolicy: IfNotPresent
+          command: 
+            - /home/fileserver
           volumeMounts:
             - mountPath: /home/ca
               name: ca-pki
@@ -58,3 +61,17 @@ spec:
   selector:
     matchLabels:
       app: fileserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fileserver
+  namespace: test
+spec:
+  selector:
+    app: fileserver
+  ports:
+    - port: 8080
+      nodePort: 30259
+      name: http-8080
+  type: NodePort
