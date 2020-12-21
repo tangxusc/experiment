@@ -56,9 +56,7 @@ data:
           fallthrough in-addr.arpa ip6.arpa
         }
         prometheus :9153
-        forward . /etc/resolv.conf {
-          max_concurrent 1000
-        }
+        forward . 8.8.8.8
         cache 30
         reload
         loadbalance
